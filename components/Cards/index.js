@@ -22,74 +22,56 @@
 
 
 
-function Cards(par) {
+function Cards(article, topic) {
     let card = document.createElement('div'),
+    headline = document.createElement('div'),
     author = document.createElement('div'),
-    array2x = Object.values(par.data.articles);
+    imageDiv = document.createElement('div'),
+    image = document.createElement('img'),
+    byAuthor = document.createElement('span');
+   
 
-    let headlineArray = array2x.map(function(smallArray){
-        return smallArray.forEach(function(obj){
-return obj.headline;
-        })
-    });
-    let imgArray = array2x.map(function(smallArray){
-        return smallArray.forEach(function(obj){
-return obj.authorPhoto;
-        })
-    });
-    let credits = array2x.map(function(smallArray){
-        return smallArray.forEach(function(obj){
-return obj.authorName;
-        })
-    });
+
     // classes     
     card.classList.add('card');
-    
+    headline.classList.add('headline');
     author.classList.add('author');
-    
+    imageDiv.classList.add('img-container');
+   
 
-    // Headline Engine
-    headlineArray.forEach(function(headlines){
-        let headline = document.createElement('div');
-        headline.classList.add('headline');
-        headline.textContent = headlines;
-        card.append(headline);
-    });
-    // Author Image Engine
-    imgArray.forEach(function(photos){
-        imageDiv = document.createElement('div');
-        imageDiv.classList.add('img-container');
-        let image = document.createElement('img');
-        image.src = photos;
-        imageDiv.append(image);
-        author.append(imageDiv);
-// author.append(byAuthor);
-    });
-    credits.forEach(function(name){
-        let byAuthor = document.createElement('span');
-        byAuthor.textContent = `By ${name}`;
-        card.append(byAuthor);
-        return byAuthor;
-    });
-    // title.textContent = "Lambda Times";
-    // temp.textContent = "98";
+       
+        
+     
+  // content
+    headline.textContent = article.headline;
+        byAuthor.textContent = `By ${article.authorName}`;
+        image.src = article.authorPhoto;
 
     //format
-    
+    card.append(headline);
     card.append(author);
-    
-    
-    headerLocal.append(card);
+    imageDiv.append(image);
+    author.append(imageDiv);
+    author.append(byAuthor);
 
     return card;
 }
 
 let headerLocal = document.querySelector('.cards-container');
 
+
 axios.get('https://lambda-times-backend.herokuapp.com/articles')
 .then(response => {
-console.log(response);
-Cards(response);
+    console.log(response);
+    const array2x = Object.keys(response.data.articles);
+    console.log(array2x);
+    array2x.map(topic =>{
+        console.log(topic);
+        response.data.articles[topic].map(article =>{
+            console.log(article);
+            headerLocal.append(Cards(article, topic));
+        })
+    })
 })
 .catch( error => {
     console.log("Error:", error);
